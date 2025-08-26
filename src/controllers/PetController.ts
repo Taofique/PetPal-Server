@@ -49,22 +49,27 @@ export const updatePet = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Pet not found' });
     }
 
-    const coercedNextFeed = nextFeed ? toDate(nextFeed) : pet.nextFeed;
-    const coercedNextVet = nextVet ? toDate(nextVet) : pet.nextVet;
+    // to only update if values are provided
+    if (ownerId !== undefined) pet.ownerId = ownerId;
+    if (nickname !== undefined) pet.nickname = nickname;
+    if (species !== undefined) pet.species = species;
+
+    if (nextFeed !== undefined) {
+      pet.nextFeed = nextFeed ? toDate(nextFeed) : null;
+    }
+    if (nextVet !== undefined) {
+      pet.nextVet = nextVet ? toDate(nextVet) : null;
+    }
 
     // If a new file was uploaded, update the photo path
-    const photo = req.file ? req.file.path : pet.photo;
+    if (req.file) {
+      pet.photo = req.file.path;
+    }
 
-    // Update bit
-    pet.ownerId = ownerId || pet.ownerId;
-    pet.nickname = nickname || pet.nickname;
-    pet.species = species || pet.species;
-    pet.nextFeed = coercedNextFeed;
-    pet.nextVet = coercedNextVet;
-    pet.photo = photo;
     await pet.save();
     res.status(200).json({ message: 'Pet updated successfully', pet });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error updating pet' });
   }
 };

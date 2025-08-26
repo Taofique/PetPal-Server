@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 //serve uploaded images
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads', 'pet_photos')));
 
 app.use('/api/pets', petsRouter);
 app.use('/users', usersRouter);

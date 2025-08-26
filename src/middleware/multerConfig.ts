@@ -1,28 +1,35 @@
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 
-// storage settings
+// Ensure the folder exists
+const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'pet_photos');
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
+// Storage settings
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/pet_photos'); // storage folder
+    cb(null, UPLOAD_DIR);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9); // for unique filenames
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); // using original file extension
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 
-// setup for file size limit and file type filter
+// Setup file size limit & type filter
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Max file size: 5MB calc from bytes
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
     const allowedFileTypes = /jpeg|jpg|png|gif/;
     const extname = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedFileTypes.test(file.mimetype);
 
     if (extname && mimetype) {
-      return cb(null, true); // Accept the file
+      return cb(null, true);
     }
     cb(new Error('Only image files are allowed (jpeg, jpg, png, gif)'));
   }
