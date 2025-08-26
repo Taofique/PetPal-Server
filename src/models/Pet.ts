@@ -33,7 +33,7 @@ Pet.init(
     species: { type: DataTypes.STRING, allowNull: false },
     nextFeed: { type: DataTypes.DATE },
     nextVet: { type: DataTypes.DATE },
-    photo: { type: DataTypes.STRING }
+    photo: { type: DataTypes.STRING, allowNull: true }
   },
   {
     sequelize,

@@ -4,7 +4,7 @@ import { sequelize } from '../db';
 //User model attributes
 interface UserAttributes {
   userId: number;
-  username: number;
+  username: string;
   email: string;
   password: string;
 }
@@ -12,7 +12,7 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'userId'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public userId!: number;
-  public username!: number;
+  public username!: string;
   public email!: string;
   public password!: string;
 }
