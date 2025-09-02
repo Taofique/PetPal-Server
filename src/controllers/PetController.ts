@@ -1,5 +1,5 @@
-import Pet from '../models/Pet';
-import { Request, Response } from 'express';
+import Pet from "../models/Pet";
+import { Request, Response } from "express";
 
 // Date coercion
 const toDate = (dateString: string | undefined): Date | null => {
@@ -29,12 +29,12 @@ export const addPet = async (req: Request, res: Response) => {
       species,
       nextFeed: coercedNextFeed,
       nextVet: coercedNextVet,
-      photo
+      photo,
     });
 
-    res.status(201).json({ message: 'Pet added successfully', pet: newPet });
+    res.status(201).json({ message: "Pet added successfully", pet: newPet });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding pet' });
+    res.status(500).json({ message: "Error adding pet" });
   }
 };
 
@@ -46,7 +46,7 @@ export const updatePet = async (req: Request, res: Response) => {
   try {
     const pet = await Pet.findByPk(id);
     if (!pet) {
-      return res.status(404).json({ message: 'Pet not found' });
+      return res.status(404).json({ message: "Pet not found" });
     }
 
     // to only update if values are provided
@@ -67,10 +67,10 @@ export const updatePet = async (req: Request, res: Response) => {
     }
 
     await pet.save();
-    res.status(200).json({ message: 'Pet updated successfully', pet });
+    res.status(200).json({ message: "Pet updated successfully", pet });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error updating pet' });
+    res.status(500).json({ message: "Error updating pet" });
   }
 };
 
@@ -80,7 +80,7 @@ export const getPets = async (req: Request, res: Response) => {
     const pets = await Pet.findAll();
     res.status(200).json({ pets });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching pets' });
+    res.status(500).json({ message: "Error fetching pets" });
   }
 };
 
@@ -90,10 +90,10 @@ export const getPetById = async (req: Request, res: Response) => {
   try {
     const pet = await Pet.findByPk(id);
     if (!pet) {
-      return res.status(404).json({ message: 'Pet not found' });
+      return res.status(404).json({ message: "Pet not found" });
     }
     res.status(200).json({ pet });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching pet' });
+    res.status(500).json({ message: "Error fetching pet" });
   }
 };
