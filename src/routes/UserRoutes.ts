@@ -1,11 +1,10 @@
-// src/routes/UserRoutes.ts
-import express from 'express';
-import { registerUser, loginUser } from '../controllers/UserController';
+import Router from "express";
+import { updateUser, getMe } from "../controllers/userController.js";
+import { authMiddleware } from "../middleware/auth.js";
 
-const router = express.Router();
+const router = Router();
 
-// User Registration and Login
-router.post('/register', registerUser);
-router.post('/login', loginUser);
+router.get("/me", authMiddleware, getMe);
+router.put("/me/update", authMiddleware, updateUser);
 
 export default router;

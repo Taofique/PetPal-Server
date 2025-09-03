@@ -1,35 +1,38 @@
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
-import { sequelize } from './db';
-import petsRouter from './routes/PetRoutes';
-import usersRouter from './routes/UserRoutes';
-import dotenv from 'dotenv';
-import Pet from './models/Pet';
-import seed from './seed/seed';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/UserRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import sequelize from "./db/index.js";
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
 app.use(cors());
-
 app.use(express.json());
 
-//serve uploaded images
-app.use('/uploads/pet_photos', express.static(path.join(process.cwd(), 'uploads', 'pet_photos')));
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
-app.use('/api/pets', petsRouter);
-app.use('/users', usersRouter);
+app.use(errorHandler);
 
-sequelize.sync().then(async () => {
-  console.log('Database synced!');
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected");
 
-  const count = await Pet.count();
-  if (count === 0) {
-    console.log('No pets found, seeding data...!');
-    await seed();
+    await sequelize.sync({ alter: true });
+    console.log("All models were synchronized successfully.");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("DB connection error:", err);
   }
+};
 
-  app.listen(process.env.PORT || 4000, () => console.log(`Server running on http://localhost:${process.env.PORT}`));
-});
+startServer();

@@ -1,29 +1,69 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../db';
+import { DataTypes, Model, Optional } from "sequelize";
+import sequelize from "../db/index.js";
+import { IUser } from "../types/user.js";
 
-//User model attributes
-interface UserAttributes {
-  userId: number;
-  username: string;
-  email: string;
-  password: string;
-}
-interface UserCreationAttributes extends Optional<UserAttributes, 'userId'> {}
+interface UserCreationAttributes
+  extends Optional<IUser, "id" | "createdAt" | "updatedAt" | "imageUrl"> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public userId!: number;
-  public username!: string;
+export class User
+  extends Model<IUser, UserCreationAttributes>
+  implements IUser
+{
+  public id!: number;
+  public name!: string;
   public email!: string;
-  public password!: string;
+  public passwordHash!: string;
+  public imageUrl?: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
+
 User.init(
   {
-    userId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    username: { type: DataTypes.STRING, allowNull: false, unique: true },
-    email: { type: DataTypes.STRING, allowNull: false, unique: true },
-    password: { type: DataTypes.STRING, allowNull: false }
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    passwordHash: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    imageUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      defaultValue: null,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
-  { sequelize, modelName: 'User', tableName: 'Users' }
+  {
+    sequelize,
+    modelName: "User",
+    tableName: "users",
+    timestamps: true,
+    underscored: true,
+  }
 );
 
 export default User;

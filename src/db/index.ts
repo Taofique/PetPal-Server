@@ -1,14 +1,23 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
-import fs from 'fs';
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-export const sequelize = new Sequelize(process.env.DB_NAME!, process.env.DB_USER!, process.env.DB_PASS!, {
-  host: process.env.DB_HOST,
-  dialect: 'postgres',
-  logging: false
-});
+const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = process.env;
 
-const UPLOAD_DIR = 'uploads';
-if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
+export const sequelize = new Sequelize(
+  String(DB_NAME),
+  String(DB_USER),
+  String(DB_PASS),
+  {
+    host: DB_HOST,
+    dialect: "postgres",
+    logging: false,
+    define: {
+      underscored: true,
+      timestamps: true,
+    },
+  }
+);
+
+export default sequelize;
