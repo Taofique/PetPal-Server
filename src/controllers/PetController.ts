@@ -1,99 +1,95 @@
-import Pet from "../models/Pet";
-import { Request, Response } from "express";
+import { Response } from "express";
+import type { AuthRequest } from "../types/authRequest.js";
+import type { IPetCreateInput, IPetUpdateInput } from "../types/pet.js";
+import { Pet } from "../models/index.js";
+import {
+  createPetService,
+  getPetsByOwnerService,
+  getPetByIdService,
+  updatePetService,
+  deletePetService,
+} from "../services/petService.js";
 
-// Date coercion
-const toDate = (dateString: string | undefined): Date | null => {
-  if (!dateString) return null;
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) {
-    return null;
-  }
-  return date;
-};
-
-// Add a new pet
-export const addPet = async (req: Request, res: Response) => {
+// Create a new Pet
+export const createPet = async (req: AuthRequest, res: Response) => {
   try {
-    const { ownerId, nickname, species, nextFeed, nextVet } = req.body;
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
 
-    // Coerce into Date objects
-    const coercedNextFeed = toDate(nextFeed);
-    const coercedNextVet = toDate(nextVet);
+    const data = req.body as IPetCreateInput;
+    const pet = await createPetService(req.userId, data);
 
-    const photo = req.file ? req.file.path : null;
-
-    //creation
-    const newPet = await Pet.create({
-      ownerId,
-      nickname,
-      species,
-      nextFeed: coercedNextFeed,
-      nextVet: coercedNextVet,
-      photo,
+    return res.status(201).json({
+      message: "Pet created successfully",
+      pet,
     });
-
-    res.status(201).json({ message: "Pet added successfully", pet: newPet });
-  } catch (error) {
-    res.status(500).json({ message: "Error adding pet" });
-  }
-};
-
-// Update existing pet
-export const updatePet = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { ownerId, nickname, species, nextFeed, nextVet } = req.body;
-
-  try {
-    const pet = await Pet.findByPk(id);
-    if (!pet) {
-      return res.status(404).json({ message: "Pet not found" });
-    }
-
-    // to only update if values are provided
-    if (ownerId !== undefined) pet.ownerId = ownerId;
-    if (nickname !== undefined) pet.nickname = nickname;
-    if (species !== undefined) pet.species = species;
-
-    if (nextFeed !== undefined) {
-      pet.nextFeed = nextFeed ? toDate(nextFeed) : null;
-    }
-    if (nextVet !== undefined) {
-      pet.nextVet = nextVet ? toDate(nextVet) : null;
-    }
-
-    // If a new file was uploaded, update the photo path
-    if (req.file) {
-      pet.photo = req.file.path;
-    }
-
-    await pet.save();
-    res.status(200).json({ message: "Pet updated successfully", pet });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Error updating pet" });
+    return res.status(400).json({ message: error.message });
   }
 };
 
-// Get all pets by owner
-export const getPets = async (req: Request, res: Response) => {
+// Get all Pets of current user
+export const getMyPets = async (req: AuthRequest, res: Response) => {
   try {
-    const pets = await Pet.findAll();
-    res.status(200).json({ pets });
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching pets" });
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const pets = await getPetsByOwnerService(req.userId);
+
+    return res.status(200).json({ pets });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(400).json({ message: error.message });
   }
 };
 
-// Get pets by id
-export const getPetById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+// Get single Pet by ID
+export const getPetById = async (req: AuthRequest, res: Response) => {
   try {
-    const pet = await Pet.findByPk(id);
-    if (!pet) {
-      return res.status(404).json({ message: "Pet not found" });
-    }
-    res.status(200).json({ pet });
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching pet" });
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const petId = parseInt(req.params.id, 10);
+    const pet = await getPetByIdService(req.userId, petId);
+
+    if (!pet) return res.status(404).json({ message: "Pet not found" });
+
+    return res.status(200).json({ pet });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+// Update Pet
+export const updatePet = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const petId = parseInt(req.params.id, 10);
+    const updates = req.body as IPetUpdateInput;
+
+    const pet = await updatePetService(req.userId, petId, updates);
+
+    return res.status(200).json({
+      message: "Pet updated successfully",
+      pet,
+    });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete Pet
+export const deletePet = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const petId = parseInt(req.params.id, 10);
+    await deletePetService(req.userId, petId);
+
+    return res.status(200).json({ message: "Pet deleted successfully" });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(400).json({ message: error.message });
   }
 };

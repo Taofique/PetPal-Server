@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/UserRoutes.js";
+import petRoutes from "./routes/PetRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import sequelize from "./db/index.js";
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/pets", petRoutes);
 
 app.use(errorHandler);
 

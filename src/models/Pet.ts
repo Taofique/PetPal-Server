@@ -1,44 +1,68 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../db';
+import { DataTypes, Model, Optional } from "sequelize";
+import sequelize from "../db/index.js";
+import type { IPet } from "../types/pet.js";
 
-// Pet model attributes
-interface PetAttributes {
-  id: number;
-  ownerId: number;
-  nickname: string;
-  species: string;
-  nextFeed: Date | null;
-  nextVet: Date | null;
-  photo: string | null;
-}
+interface PetCreationAttributes
+  extends Optional<IPet, "id" | "createdAt" | "updatedAt"> {}
 
-// pet creation type without id since auto
-interface PetCreationAttributes extends Optional<PetAttributes, 'id'> {}
-
-class Pet extends Model<PetAttributes, PetCreationAttributes> implements PetAttributes {
+class Pet extends Model<IPet, PetCreationAttributes> implements IPet {
   public id!: number;
-  public ownerId!: number;
+  public name!: string;
   public nickname!: string;
   public species!: string;
-  public nextFeed!: Date | null;
-  public nextVet!: Date | null;
-  public photo!: string | null;
+  public age!: number;
+  public ownerId!: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 Pet.init(
   {
-    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    ownerId: { type: DataTypes.INTEGER, allowNull: false },
-    nickname: { type: DataTypes.STRING, allowNull: false },
-    species: { type: DataTypes.STRING, allowNull: false },
-    nextFeed: { type: DataTypes.DATE },
-    nextVet: { type: DataTypes.DATE },
-    photo: { type: DataTypes.STRING, allowNull: true }
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    nickname: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    species: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    age: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    ownerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "owner_id",
+      references: { model: "users", key: "id" },
+      onDelete: "CASCADE",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
-    modelName: 'Pet',
-    tableName: 'pets'
+    tableName: "pets",
+    modelName: "Pet",
+    timestamps: true,
+    underscored: true,
   }
 );
 
