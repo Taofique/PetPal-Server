@@ -6,7 +6,7 @@ import {
   getPetById,
   updatePet,
   deletePet,
-} from "../controllers/petController.js";
+} from "../controllers/PetController.js";
 
 const router = Router();
 

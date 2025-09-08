@@ -3,7 +3,7 @@ import sequelize from "../db/index.js";
 import type { IPet } from "../types/pet.js";
 
 interface PetCreationAttributes
-  extends Optional<IPet, "id" | "createdAt" | "updatedAt"> {}
+  extends Optional<IPet, "id" | "createdAt" | "updatedAt" | "imageUrl"> {}
 
 class Pet extends Model<IPet, PetCreationAttributes> implements IPet {
   public id!: number;
@@ -11,6 +11,7 @@ class Pet extends Model<IPet, PetCreationAttributes> implements IPet {
   public nickname!: string;
   public species!: string;
   public age!: number;
+  public imageUrl!: string | null;
   public ownerId!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -39,6 +40,11 @@ Pet.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "image_url",
+    },
     ownerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -50,11 +56,13 @@ Pet.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+      field: "created_at",
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+      field: "updated_at",
     },
   },
   {

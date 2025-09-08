@@ -1,7 +1,6 @@
 import { Response } from "express";
 import type { AuthRequest } from "../types/authRequest.js";
 import type { IPetCreateInput, IPetUpdateInput } from "../types/pet.js";
-import { Pet } from "../models/index.js";
 import {
   createPetService,
   getPetsByOwnerService,
@@ -29,13 +28,17 @@ export const createPet = async (req: AuthRequest, res: Response) => {
 };
 
 // Get all Pets of current user
+// Get all Pets of current user
 export const getMyPets = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
 
-    const pets = await getPetsByOwnerService(req.userId);
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
 
-    return res.status(200).json({ pets });
+    const result = await getPetsByOwnerService(req.userId, page, limit);
+
+    return res.status(200).json(result);
   } catch (error: any) {
     console.error(error);
     return res.status(400).json({ message: error.message });

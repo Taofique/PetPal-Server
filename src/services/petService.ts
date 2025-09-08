@@ -21,9 +21,27 @@ export const createPetService = async (
 };
 
 // Get all Pets of an owner
-export const getPetsByOwnerService = async (ownerId: number) => {
-  const pets = await Pet.findAll({ where: { ownerId } });
-  return pets;
+// Get all Pets of an owner with pagination
+export const getPetsByOwnerService = async (
+  ownerId: number,
+  page = 1,
+  limit = 10
+) => {
+  const offset = (page - 1) * limit;
+
+  const { count, rows: pets } = await Pet.findAndCountAll({
+    where: { ownerId },
+    limit,
+    offset,
+    order: [["createdAt", "DESC"]],
+  });
+
+  return {
+    total: count,
+    page,
+    pageSize: limit,
+    pets,
+  };
 };
 
 // Get single Pet by ID (owner restricted)
@@ -52,6 +70,7 @@ export const updatePetService = async (
   if (updates.name !== undefined) pet.name = updates.name;
   if (updates.species !== undefined) pet.species = updates.species;
   if (updates.age !== undefined) pet.age = updates.age;
+  if (updates.imageUrl !== undefined) pet.imageUrl = updates.imageUrl;
 
   await pet.save();
   return pet;

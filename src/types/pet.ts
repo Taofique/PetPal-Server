@@ -4,6 +4,7 @@ export interface IPet {
   nickname: string;
   species: string;
   age: number;
+  imageUrl: string | null;
   ownerId: number;
   createdAt: Date;
   updatedAt: Date;
@@ -14,6 +15,7 @@ export interface IPetCreateInput {
   nickname: string;
   species: string;
   age: number;
+  imageUrl?: string | null;
 }
 
 export interface IPetUpdateInput {
@@ -21,4 +23,5 @@ export interface IPetUpdateInput {
   nickname?: string;
   species?: string;
   age?: number;
+  imageUrl?: string | null;
 }
