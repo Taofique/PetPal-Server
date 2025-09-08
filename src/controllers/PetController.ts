@@ -28,7 +28,6 @@ export const createPet = async (req: AuthRequest, res: Response) => {
 };
 
 // Get all Pets of current user
-// Get all Pets of current user
 export const getMyPets = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.userId) return res.status(401).json({ message: "Unauthorized" });

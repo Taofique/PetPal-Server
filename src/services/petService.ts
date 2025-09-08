@@ -20,7 +20,6 @@ export const createPetService = async (
   return pet;
 };
 
-// Get all Pets of an owner
 // Get all Pets of an owner with pagination
 export const getPetsByOwnerService = async (
   ownerId: number,
