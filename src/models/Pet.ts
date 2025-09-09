@@ -6,15 +6,15 @@ interface PetCreationAttributes
   extends Optional<IPet, "id" | "createdAt" | "updatedAt" | "imageUrl"> {}
 
 class Pet extends Model<IPet, PetCreationAttributes> implements IPet {
-  public id!: number;
-  public name!: string;
-  public nickname!: string;
-  public species!: string;
-  public age!: number;
-  public imageUrl!: string | null;
-  public ownerId!: number;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare id: number;
+  declare name: string;
+  declare nickname: string;
+  declare species: string;
+  declare age: number;
+  declare imageUrl: string | null;
+  declare ownerId: number;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 Pet.init(

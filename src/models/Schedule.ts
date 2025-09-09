@@ -18,16 +18,16 @@ export class Schedule
   extends Model<ISchedule, ScheduleCreationAttributes>
   implements ISchedule
 {
-  public id!: number;
-  public petId!: number;
-  public ownerId!: number;
-  public title!: string;
-  public description!: string | null;
-  public date!: Date;
-  public endDate?: Date | null;
-  public status!: "upcoming" | "done" | "missed";
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare id: number;
+  declare petId: number;
+  declare ownerId: number;
+  declare title: string;
+  declare description: string | null;
+  declare date: Date;
+  declare endDate?: Date | null;
+  declare status: "upcoming" | "done" | "missed";
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 Schedule.init(
@@ -51,7 +51,6 @@ Schedule.init(
       references: { model: "users", key: "id" },
       onDelete: "CASCADE",
     },
-
     title: {
       type: DataTypes.STRING(120),
       allowNull: false,
@@ -59,7 +58,6 @@ Schedule.init(
     description: {
       type: DataTypes.STRING(1000),
       allowNull: true,
-      defaultValue: null,
     },
     date: {
       type: DataTypes.DATE,

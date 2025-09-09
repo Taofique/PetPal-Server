@@ -34,6 +34,7 @@ export const registerUserService = async (input: IUserCreateInput) => {
 // Login user
 export const loginUserService = async (input: IUserLoginInput) => {
   const user = await User.findOne({ where: { email: input.email } });
+
   if (!user) throw new Error("Invalid email or password");
 
   const isMatch = await bcrypt.compare(input.password, user.passwordHash);

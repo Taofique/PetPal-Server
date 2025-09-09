@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/UserRoutes.js";
 import petRoutes from "./routes/PetRoutes.js";
 import scheduleRoutes from "./routes/scheduleRoutes.js";
+import careLogRoutes from "./routes/careLogRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import sequelize from "./db/index.js";
 
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/pets", petRoutes);
 app.use("/api/schedules", scheduleRoutes);
+app.use("/api/care", careLogRoutes);
 
 app.use(errorHandler);
 
@@ -36,6 +38,13 @@ const startServer = async () => {
     });
   } catch (err) {
     console.error("DB connection error:", err);
+    if (err instanceof Error) {
+      console.error("Error message:", err.message);
+      console.error("Stack:", err.stack);
+    } else {
+      console.error("Non-Error thrown:", JSON.stringify(err, null, 2));
+    }
+    process.exit(1);
   }
 };
 

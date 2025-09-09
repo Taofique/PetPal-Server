@@ -9,13 +9,13 @@ export class User
   extends Model<IUser, UserCreationAttributes>
   implements IUser
 {
-  public id!: number;
-  public name!: string;
-  public email!: string;
-  public passwordHash!: string;
-  public imageUrl?: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare id: number;
+  declare name: string;
+  declare email: string;
+  declare passwordHash: string;
+  declare imageUrl?: string;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 User.init(
