@@ -6,6 +6,7 @@ import userRoutes from "./routes/UserRoutes.js";
 import petRoutes from "./routes/PetRoutes.js";
 import scheduleRoutes from "./routes/scheduleRoutes.js";
 import careLogRoutes from "./routes/careLogRoutes.js";
+import feedPostRoutes from "./routes/feedRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import sequelize from "./db/index.js";
 
@@ -22,6 +23,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/pets", petRoutes);
 app.use("/api/schedules", scheduleRoutes);
 app.use("/api/care", careLogRoutes);
+app.use("/api/feed", feedPostRoutes);
 
 app.use(errorHandler);
 

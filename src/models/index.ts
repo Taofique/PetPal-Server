@@ -2,6 +2,7 @@ import User from "./User.js";
 import Pet from "./Pet.js";
 import Schedule from "./Schedule.js";
 import CareLog from "./CareLog.js";
+import Post from "./FeedPost.js";
 
 User.hasMany(Pet, { foreignKey: "ownerId", as: "pets" });
 Pet.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
@@ -22,4 +23,10 @@ CareLog.belongsTo(User, { foreignKey: "userId", as: "user" });
 Pet.hasMany(CareLog, { foreignKey: "petId", as: "careLogs" });
 CareLog.belongsTo(Pet, { foreignKey: "petId", as: "pet" });
 
-export { User, Pet, Schedule, CareLog };
+User.hasMany(Post, { foreignKey: "userId", as: "posts" });
+Post.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+Pet.hasMany(Post, { foreignKey: "petId", as: "posts" });
+Post.belongsTo(Pet, { foreignKey: "petId", as: "pet" });
+
+export { User, Pet, Schedule, CareLog, Post };

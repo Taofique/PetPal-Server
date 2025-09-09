@@ -56,7 +56,6 @@ export const deleteCareLogService = async (userId: number, logId: number) => {
 };
 
 // Get streak (consecutive days)
-// Get streak (consecutive days)
 export const getStreakService = async (userId: number, petId: number) => {
   const logs = await CareLog.findAll({
     where: { userId, petId },
@@ -65,31 +64,26 @@ export const getStreakService = async (userId: number, petId: number) => {
 
   if (logs.length === 0) return 0;
 
-  let streak = 1; // Start with 1 for the most recent day
+  let streak = 1;
 
-  // Convert all dates to simple YYYY-MM-DD format for easy comparison
   const dates = logs.map((log) => {
     const date = new Date(log.date);
-    return date.toISOString().split("T")[0]; // Gets just the date part
+    return date.toISOString().split("T")[0];
   });
 
-  // Remove duplicate dates (multiple logs on same day still count as 1 day)
   const uniqueDates = [...new Set(dates)];
 
-  // Check consecutive days starting from most recent
   for (let i = 1; i < uniqueDates.length; i++) {
     const currentDate = new Date(uniqueDates[i - 1]);
     const previousDate = new Date(uniqueDates[i]);
 
-    // Calculate difference in days
     const timeDiff = currentDate.getTime() - previousDate.getTime();
     const dayDiff = timeDiff / (1000 * 3600 * 24);
 
-    // If exactly 1 day apart, continue the streak
     if (dayDiff === 1) {
       streak++;
     } else {
-      break; // Streak broken
+      break;
     }
   }
 
