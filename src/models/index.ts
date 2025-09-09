@@ -3,6 +3,8 @@ import Pet from "./Pet.js";
 import Schedule from "./Schedule.js";
 import CareLog from "./CareLog.js";
 import Post from "./FeedPost.js";
+import Sitter from "./Sitter.js";
+import SitterRequest from "./SitterRequest.js";
 
 User.hasMany(Pet, { foreignKey: "ownerId", as: "pets" });
 Pet.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
@@ -29,4 +31,16 @@ Post.belongsTo(User, { foreignKey: "userId", as: "user" });
 Pet.hasMany(Post, { foreignKey: "petId", as: "posts" });
 Post.belongsTo(Pet, { foreignKey: "petId", as: "pet" });
 
-export { User, Pet, Schedule, CareLog, Post };
+User.hasOne(Sitter, { foreignKey: "userId", as: "sitterProfile" });
+Sitter.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+Sitter.hasMany(SitterRequest, { foreignKey: "sitterId", as: "requests" });
+SitterRequest.belongsTo(Sitter, { foreignKey: "sitterId", as: "sitter" });
+
+Pet.hasMany(SitterRequest, { foreignKey: "petId", as: "requests" });
+SitterRequest.belongsTo(Pet, { foreignKey: "petId", as: "pet" });
+
+User.hasMany(SitterRequest, { foreignKey: "userId", as: "sentRequests" });
+SitterRequest.belongsTo(User, { foreignKey: "userId", as: "requester" });
+
+export { User, Pet, Schedule, CareLog, Post, Sitter, SitterRequest };
