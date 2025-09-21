@@ -5,6 +5,7 @@ import CareLog from "./CareLog.js";
 import Post from "./FeedPost.js";
 import Sitter from "./Sitter.js";
 import SitterRequest from "./SitterRequest.js";
+import Comment from "./Comment.js";
 
 User.hasMany(Pet, { foreignKey: "ownerId", as: "pets" });
 Pet.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
@@ -43,4 +44,12 @@ SitterRequest.belongsTo(Pet, { foreignKey: "petId", as: "pet" });
 User.hasMany(SitterRequest, { foreignKey: "userId", as: "sentRequests" });
 SitterRequest.belongsTo(User, { foreignKey: "userId", as: "requester" });
 
-export { User, Pet, Schedule, CareLog, Post, Sitter, SitterRequest };
+// Comment associations
+
+User.hasMany(Comment, { foreignKey: "userId", as: "comments" });
+Comment.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+Pet.hasMany(Comment, { foreignKey: "petId", as: "comments" });
+Comment.belongsTo(Pet, { foreignKey: "petId", as: "pet" });
+
+export { User, Pet, Schedule, CareLog, Post, Sitter, SitterRequest, Comment };

@@ -8,6 +8,7 @@ import scheduleRoutes from "./routes/scheduleRoutes.js";
 import careLogRoutes from "./routes/careLogRoutes.js";
 import feedPostRoutes from "./routes/feedRoutes.js";
 import sitterRoutes from "./routes/sitterRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import sequelize from "./db/index.js";
 
@@ -26,6 +27,7 @@ app.use("/api/schedules", scheduleRoutes);
 app.use("/api/care", careLogRoutes);
 app.use("/api/feed", feedPostRoutes);
 app.use("/api/sitter", sitterRoutes);
+app.use("/api/comments", commentRoutes);
 
 app.use(errorHandler);
 
